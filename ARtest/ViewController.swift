@@ -13,11 +13,18 @@ class ViewController: UIViewController,ARSCNViewDelegate {
 
     
     @IBOutlet weak var sceneView: ARSCNView!
+    @IBOutlet weak var backButtin: UIButton!
+    @IBOutlet weak var rightButton: UIButton!
+    @IBOutlet weak var leftButton: UIButton!
+    @IBOutlet weak var forwardButton: UIButton!
+    @IBOutlet weak var diceCreateButton: UIButton!
+    @IBOutlet weak var deleteButton: UIButton!
+    
     let configuration = ARWorldTrackingConfiguration()
     var x = 0.0
     var y = 0.0
     var z = 0.0
-    let scene = TestScene()
+    var scene = TestScene.init(kind: "female")
     override func viewDidLoad() {
         super.viewDidLoad()
         self.sceneView.delegate = self
@@ -26,8 +33,14 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         self.sceneView.debugOptions = [SCNDebugOptions.showWorldOrigin]
         self.sceneView.autoenablesDefaultLighting = true
         self.sceneView.session.run(configuration)
-        self.registerGestureRecognizers()
-        // Do any additional setup after loading the view.
+        self.backButtin.layer.cornerRadius = 10
+        self.forwardButton.layer.cornerRadius = 10
+        self.diceCreateButton.layer.cornerRadius = 10
+        self.deleteButton.layer.cornerRadius = 10
+        self.rightButton.layer.cornerRadius = 10
+        self.leftButton.layer.cornerRadius = 10
+        
+        
     }
     
     func createBox(hitTestResult: ARHitTestResult){
@@ -101,8 +114,6 @@ class ViewController: UIViewController,ARSCNViewDelegate {
     }
     
     @IBAction func dicecreateButton(_ sender: Any) {
-        //let sceneView = self.sceneView as! ARSCNView
-        print("test")
         let centerPositionX = self.sceneView.bounds.width/2
         let centerPositionY = self.sceneView.bounds.height/2
         let centerLocation = CGPoint(x: centerPositionX, y: centerPositionY)
@@ -152,33 +163,54 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         z -= 0.05
     }
     
-    
-    func registerGestureRecognizers() {
-        let tapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapped))
-        self.sceneView.addGestureRecognizer(tapGestureRecognizer)
-    }
-    
-    @objc func tapped(sender: UITapGestureRecognizer) {
-        let sceneView = sender.view as! ARSCNView
-        let taplocation = sender.location(in: sceneView)
-        let hitTest = sceneView.hitTest(taplocation, types: .existingPlaneUsingExtent)
-        if !hitTest.isEmpty {
-            //print("hit")
-            self.createBox(hitTestResult: hitTest.first!)
-        } else {
-            print("don't hit")
-        }
-    }
-    
     func rightrotate(node: SCNNode) {
         let angle = 90.degreeToRadians
         node.eulerAngles = SCNVector3(0,0,-angle)
     }
-    
-    @IBAction func test(_ sender: Any) {
-        let a = scene.boxNode
-        a.position = SCNVector3(a.position.x,a.position.y+0.01,a.position.z)
+    @IBAction func changeKind(_ sender: UISwitch) {
+        if sender.isOn {
+            self.sceneView.scene.rootNode.enumerateChildNodes{ ( node,stop )in
+            node.removeFromParentNode()
+            }
+             scene.kind = "male"
+            self.scene = TestScene.init(kind: "male")
+            self.sceneView.scene = scene
+            
+            let centerPositionX = self.sceneView.bounds.width/2
+            let centerPositionY = self.sceneView.bounds.height/2
+            let centerLocation = CGPoint(x: centerPositionX, y: centerPositionY)
+            let hitTest = sceneView.hitTest(centerLocation, types: .existingPlaneUsingExtent)
+            if !hitTest.isEmpty {
+                print("hit")
+                self.createBox(hitTestResult: hitTest.first!)
+            } else {
+                print("don't hit")
+            }
+        }
+        else
+        {
+            self.sceneView.scene.rootNode.enumerateChildNodes{ ( node,stop )in
+            node.removeFromParentNode()
+            }
+            scene.kind = "male"
+            self.scene = TestScene.init(kind: "female")
+            self.sceneView.scene = scene
+
+            let centerPositionX = self.sceneView.bounds.width/2
+            let centerPositionY = self.sceneView.bounds.height/2
+            let centerLocation = CGPoint(x: centerPositionX, y: centerPositionY)
+            let hitTest = sceneView.hitTest(centerLocation, types: .existingPlaneUsingExtent)
+            if !hitTest.isEmpty {
+                print("hit")
+                self.createBox(hitTestResult: hitTest.first!)
+                
+            } else {
+                print("don't hit")
+            }
+            
+        }
     }
+    
     
 }
 
@@ -190,17 +222,36 @@ class TestScene: SCNScene {
     
    var boxNode = SCNNode()
    var emptyNode = SCNNode()
-   override init() {
-       super.init()
-
-       self.setUpScene()
-   }
+   var kind = "male"
+   let box = SCNBox(width: 0.05, height: 0.05, length: 0.05, chamferRadius: 0)
+    
+    init(kind: String) {
+        super.init()
+        self.kind = kind
+        print("イニシャライズが行われました")
+        self.setUpScene(kind: kind)
+        
+    }
+    
+    
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func setUpScene() {
-        let box = SCNBox(width: 0.05, height: 0.05, length: 0.05, chamferRadius: 0)
+    func setUpScene(kind: String) {
+        print("種類は\(kind)です")
+        if kind == "male" {
+        print("テストsetup")
+            diceMale()
+        } else {
+            dicefemale()
+        }
+        
+        boxNode = SCNNode(geometry: box)
+        self.rootNode.addChildNode(emptyNode)
+    }
+    
+    func diceMale() {
         let m1 = SCNMaterial()
         let m2 = SCNMaterial()
         let m3 = SCNMaterial()
@@ -208,15 +259,34 @@ class TestScene: SCNScene {
         let m5 = SCNMaterial()
         let m6 = SCNMaterial()
 
-        m1.diffuse.contents = UIImage(named: "rect4")
-        m2.diffuse.contents = UIImage(named: "rect2")
-        m3.diffuse.contents = UIImage(named: "rect3")
-        m4.diffuse.contents = UIImage(named: "rect5")
+        m1.diffuse.contents = UIImage(named: "rect2")
+        m2.diffuse.contents = UIImage(named: "rect3")
+        m3.diffuse.contents = UIImage(named: "rect5")
+        m4.diffuse.contents = UIImage(named: "rect4")
         m5.diffuse.contents = UIImage(named: "rect1")
         m6.diffuse.contents = UIImage(named: "rect6")
-
+        
         box.materials = [m1,m2,m3,m4,m5,m6]
-        boxNode = SCNNode(geometry: box)
-        self.rootNode.addChildNode(emptyNode)
+
     }
+    
+    func dicefemale() {
+        let m1 = SCNMaterial()
+        let m2 = SCNMaterial()
+        let m3 = SCNMaterial()
+        let m4 = SCNMaterial()
+        let m5 = SCNMaterial()
+        let m6 = SCNMaterial()
+
+        m1.diffuse.contents = UIImage(named: "rect2")
+        m2.diffuse.contents = UIImage(named: "rect4")
+        m3.diffuse.contents = UIImage(named: "rect5")
+        m4.diffuse.contents = UIImage(named: "rect3")
+        m5.diffuse.contents = UIImage(named: "rect1")
+        m6.diffuse.contents = UIImage(named: "rect6")
+        
+        box.materials = [m1,m2,m3,m4,m5,m6]
+
+    }
+    
 }
