@@ -24,12 +24,15 @@ class ViewController: UIViewController,ARSCNViewDelegate {
     var x = 0.0
     var y = 0.0
     var z = 0.0
-    var scene = TestScene.init(kind: "female")
+    
+    var angle = 0.0
+    var scene = TestScene.init(kind: "male")
     override func viewDidLoad() {
         super.viewDidLoad()
         self.sceneView.delegate = self
         self.sceneView.scene = scene
         self.configuration.planeDetection = .horizontal
+        self.configuration.frameSemantics = .personSegmentationWithDepth//okuru-jonn
         self.sceneView.debugOptions = [SCNDebugOptions.showWorldOrigin]
         self.sceneView.autoenablesDefaultLighting = true
         self.sceneView.session.run(configuration)
@@ -39,9 +42,14 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         self.deleteButton.layer.cornerRadius = 10
         self.rightButton.layer.cornerRadius = 10
         self.leftButton.layer.cornerRadius = 10
-        
-        
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        sceneView.session.pause()
+        print("pause")
+    }
+    
     
     func createBox(hitTestResult: ARHitTestResult){
         
@@ -55,21 +63,20 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         let transform = hitTestResult.worldTransform
         let thirdColumn = transform.columns.3
         let boxNode = scene.boxNode
+        let planeDice = scene.planeDice
 //        if let camera = self.sceneView.pointOfView {
-//            boxNode.eulerAngles = SCNVector3(0,camera.eulerAngles.y + Float(90.degreeToRadians),0)
+//            boxNode.eulerAngles = SCNVector3(0,camera.eulerAngles.y + Float(180.degreeToRadians),0)
 //        }
         
         boxNode.geometry?.firstMaterial?.lightingModel = .constant
         boxNode.position = SCNVector3(thirdColumn.x,thirdColumn.y,thirdColumn.z)
-        //boxNode.addChildNode(light())
-//        boxNode.name = "box"
-//        print(boxNode.name ?? "")
-        //self.sceneView.scene.rootNode.addChildNode(boxNode)
-        sceneView.scene.rootNode.addChildNode(boxNode)
+        //sceneView.scene.rootNode.addChildNode(boxNode)
+        planeDice.position = SCNVector3(thirdColumn.x,thirdColumn.y,thirdColumn.z)
+        sceneView.scene.rootNode.addChildNode(planeDice)
+        
         self.x = Double(thirdColumn.x)
         self.y = Double(thirdColumn.y)
         self.z = Double(thirdColumn.z)
-        
     }
     
     
@@ -98,7 +105,6 @@ class ViewController: UIViewController,ARSCNViewDelegate {
     }
     
     func renderer(_ renderer: SCNSceneRenderer, didAdd node: SCNNode, for anchor: ARAnchor) {
-        //print("anchor")
         guard let planeAnchor = anchor as? ARPlaneAnchor else { return }
         self.sceneView.scene.rootNode.addChildNode(createPlane(planeAnchor: planeAnchor))
     }
@@ -127,37 +133,48 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         }
         
     }
-    
-
     @IBAction func leftButton(_ sender: Any) {
-        scene.emptyNode.position = SCNVector3(x: scene.boxNode.worldPosition.x-0.025,y: scene.boxNode.worldPosition.y-0.025,z: scene.boxNode.worldPosition.z)
-        scene.emptyNode.addChildNode(scene.boxNode)
-        scene.boxNode.worldPosition = SCNVector3(x,y,z)
+        scene.emptyNode.position = SCNVector3(x: scene.planeDice.worldPosition.x-0.025,y: scene.planeDice.worldPosition.y-0.025,z: scene.planeDice.worldPosition.z)
+        
+        scene.emptyNode.addChildNode(scene.planeDice)
+        scene.planeDice.worldPosition = SCNVector3(x,y,z)
+        
         let rotateAnimation = SCNAction.rotate(by: CGFloat(Float.pi/2), around: SCNVector3(0,0,1), duration: 0.1)
         scene.emptyNode.runAction(rotateAnimation)
         x -= 0.05
     }
     
     @IBAction func rightButton(_ sender: Any) {
-        scene.emptyNode.position = SCNVector3(x: scene.boxNode.worldPosition.x+0.025,y: scene.boxNode.worldPosition.y-0.025,z: scene.boxNode.worldPosition.z)
-        scene.emptyNode.addChildNode(scene.boxNode)
-        scene.boxNode.worldPosition = SCNVector3(x,y,z)
+        
+        scene.emptyNode.position = SCNVector3(x: scene.planeDice.worldPosition.x+0.025,y: scene.planeDice.worldPosition.y-0.025,z: scene.planeDice.worldPosition.z)
+        
+        scene.emptyNode.addChildNode(scene.planeDice)
+        scene.planeDice.worldPosition = SCNVector3(x,y,z)
         let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(0,0,1), duration: 0.1)
         scene.emptyNode.runAction(rotateAnimation)
         x += 0.05
+        
+        let a = SCNNode()
+        let b = SCNPlane(width: 0.05, height: 0.05)
+        a.geometry = b
+        a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect1")
+        a.position = SCNVector3(x-0.05,y-0.025,z)
+        a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
+        scene.rootNode.addChildNode(a)
+        
     }
     @IBAction func forwardButton(_ sender: Any) {
-        scene.emptyNode.position = SCNVector3(x: scene.boxNode.worldPosition.x,y: scene.boxNode.worldPosition.y-0.025,z: scene.boxNode.worldPosition.z+0.025)
-        scene.emptyNode.addChildNode(scene.boxNode)
-        scene.boxNode.worldPosition = SCNVector3(x,y,z)
+        scene.emptyNode.position = SCNVector3(x: scene.planeDice.worldPosition.x,y: scene.planeDice.worldPosition.y-0.025,z: scene.planeDice.worldPosition.z+0.025)
+        scene.emptyNode.addChildNode(scene.planeDice)
+        scene.planeDice.worldPosition = SCNVector3(x,y,z)
         let rotateAnimation = SCNAction.rotate(by: CGFloat(Float.pi/2), around: SCNVector3(1,0,0), duration: 0.1)
         scene.emptyNode.runAction(rotateAnimation)
         z += 0.05
     }
     @IBAction func backButton(_ sender: Any) {
-        scene.emptyNode.position = SCNVector3(x: scene.boxNode.worldPosition.x,y: scene.boxNode.worldPosition.y-0.025,z: scene.boxNode.worldPosition.z-0.025)
-        scene.emptyNode.addChildNode(scene.boxNode)
-        scene.boxNode.worldPosition = SCNVector3(x,y,z)
+        scene.emptyNode.position = SCNVector3(x: scene.planeDice.worldPosition.x,y: scene.planeDice.worldPosition.y-0.025,z: scene.planeDice.worldPosition.z-0.025)
+        scene.emptyNode.addChildNode(scene.planeDice)
+        scene.planeDice.worldPosition = SCNVector3(x,y,z)
         let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(1,0,0), duration: 0.1)
         scene.emptyNode.runAction(rotateAnimation)
         z -= 0.05
@@ -220,8 +237,18 @@ extension Int {
 
 class TestScene: SCNScene {
     
-   var boxNode = SCNNode()
-   var emptyNode = SCNNode()
+    var boxNode = SCNNode()
+    var emptyNode = SCNNode()
+    
+    var planeDice = SCNNode()
+    var plane1 = SCNNode()
+    var plane2 = SCNNode()
+    var plane3 = SCNNode()
+    var plane4 = SCNNode()
+    var plane5 = SCNNode()
+    var plane6 = SCNNode()
+    
+    
    var kind = "male"
    let box = SCNBox(width: 0.05, height: 0.05, length: 0.05, chamferRadius: 0)
     
@@ -230,7 +257,6 @@ class TestScene: SCNScene {
         self.kind = kind
         print("イニシャライズが行われました")
         self.setUpScene(kind: kind)
-        
     }
     
     
@@ -239,54 +265,157 @@ class TestScene: SCNScene {
     }
     
     func setUpScene(kind: String) {
-        print("種類は\(kind)です")
-        if kind == "male" {
-        print("テストsetup")
-            diceMale()
-        } else {
-            dicefemale()
-        }
         
-        boxNode = SCNNode(geometry: box)
+       
+        if kind == "male" {
+         print("種類は\(kind)です")
+            makeplaneDice()
+        } else {
+             print("種類は\(kind)です")
+            makeplaneDiceFemale()
+        }
+
         self.rootNode.addChildNode(emptyNode)
     }
     
-    func diceMale() {
-        let m1 = SCNMaterial()
-        let m2 = SCNMaterial()
-        let m3 = SCNMaterial()
-        let m4 = SCNMaterial()
-        let m5 = SCNMaterial()
-        let m6 = SCNMaterial()
-
-        m1.diffuse.contents = UIImage(named: "rect2")
-        m2.diffuse.contents = UIImage(named: "rect3")
-        m3.diffuse.contents = UIImage(named: "rect5")
-        m4.diffuse.contents = UIImage(named: "rect4")
-        m5.diffuse.contents = UIImage(named: "rect1")
-        m6.diffuse.contents = UIImage(named: "rect6")
+    func makeplaneDice() {
+        let plane1 = SCNPlane(width: 0.05, height: 0.05)
+        let plane2 = SCNPlane(width: 0.05, height: 0.05)
+        let plane3 = SCNPlane(width: 0.05, height: 0.05)
+        let plane4 = SCNPlane(width: 0.05, height: 0.05)
+        let plane5 = SCNPlane(width: 0.05, height: 0.05)
+        let plane6 = SCNPlane(width: 0.05, height: 0.05)
         
-        box.materials = [m1,m2,m3,m4,m5,m6]
-
+        
+        self.plane1.geometry = plane1
+        self.plane2.geometry = plane2
+        self.plane3.geometry = plane3
+        self.plane4.geometry = plane4
+        self.plane5.geometry = plane5
+        self.plane6.geometry = plane6
+        
+        self.plane1.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect1")
+        self.plane2.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect2")
+        self.plane3.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect3")
+        self.plane4.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect4")
+        self.plane5.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect5")
+        self.plane6.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect6")
+        
+        
+        
+        self.planeDice.addChildNode(self.plane1)
+        self.planeDice.addChildNode(self.plane2)
+        self.planeDice.addChildNode(self.plane3)
+        self.planeDice.addChildNode(self.plane4)
+        self.planeDice.addChildNode(self.plane5)
+        self.planeDice.addChildNode(self.plane6)
+        
+        self.plane1.position = SCNVector3(0,0.025,0)
+        self.plane1.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
+        
+        self.plane2.position = SCNVector3(0,0,0.025)
+        self.plane2.eulerAngles = SCNVector3(0,0,0)
+        
+        self.plane4.position = SCNVector3(0.025,0,0)
+        self.plane4.eulerAngles = SCNVector3(0,90.degreeToRadians,0)
+        
+        self.plane3.position = SCNVector3(-0.025,0,0)
+        self.plane3.eulerAngles = SCNVector3(0,-90.degreeToRadians,0)
+        
+        self.plane5.position = SCNVector3(0,0,-0.025)
+        self.plane5.eulerAngles = SCNVector3(180.degreeToRadians,0,0)
+        
+        self.plane6.position = SCNVector3(0,-0.025,0)
+        self.plane6.eulerAngles = SCNVector3(90.degreeToRadians,0,0)
     }
     
-    func dicefemale() {
-        let m1 = SCNMaterial()
-        let m2 = SCNMaterial()
-        let m3 = SCNMaterial()
-        let m4 = SCNMaterial()
-        let m5 = SCNMaterial()
-        let m6 = SCNMaterial()
-
-        m1.diffuse.contents = UIImage(named: "rect2")
-        m2.diffuse.contents = UIImage(named: "rect4")
-        m3.diffuse.contents = UIImage(named: "rect5")
-        m4.diffuse.contents = UIImage(named: "rect3")
-        m5.diffuse.contents = UIImage(named: "rect1")
-        m6.diffuse.contents = UIImage(named: "rect6")
+    func makeplaneDiceFemale() {
+        let plane1 = SCNPlane(width: 0.05, height: 0.05)
+        let plane2 = SCNPlane(width: 0.05, height: 0.05)
+        let plane3 = SCNPlane(width: 0.05, height: 0.05)
+        let plane4 = SCNPlane(width: 0.05, height: 0.05)
+        let plane5 = SCNPlane(width: 0.05, height: 0.05)
+        let plane6 = SCNPlane(width: 0.05, height: 0.05)
         
-        box.materials = [m1,m2,m3,m4,m5,m6]
-
+        
+        self.plane1.geometry = plane1
+        self.plane2.geometry = plane2
+        self.plane3.geometry = plane3
+        self.plane4.geometry = plane4
+        self.plane5.geometry = plane5
+        self.plane6.geometry = plane6
+        
+        self.plane1.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect1")
+        self.plane2.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect2")
+        self.plane3.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect3")
+        self.plane4.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect4")
+        self.plane5.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect5")
+        self.plane6.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect6")
+        
+        
+        
+        self.planeDice.addChildNode(self.plane1)
+        self.planeDice.addChildNode(self.plane2)
+        self.planeDice.addChildNode(self.plane3)
+        self.planeDice.addChildNode(self.plane4)
+        self.planeDice.addChildNode(self.plane5)
+        self.planeDice.addChildNode(self.plane6)
+        
+        self.plane1.position = SCNVector3(0,0.025,0)
+        self.plane1.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
+        
+        self.plane2.position = SCNVector3(0,0,0.025)
+        self.plane2.eulerAngles = SCNVector3(0,0,0)
+        
+        self.plane3.position = SCNVector3(0.025,0,0)
+        self.plane3.eulerAngles = SCNVector3(0,90.degreeToRadians,0)
+        
+        self.plane4.position = SCNVector3(-0.025,0,0)
+        self.plane4.eulerAngles = SCNVector3(0,-90.degreeToRadians,0)
+        
+        self.plane5.position = SCNVector3(0,0,-0.025)
+        self.plane5.eulerAngles = SCNVector3(180.degreeToRadians,0,0)
+        
+        self.plane6.position = SCNVector3(0,-0.025,0)
+        self.plane6.eulerAngles = SCNVector3(90.degreeToRadians,0,0)
     }
+//
+//    func diceMale() {
+//        let m1 = SCNMaterial()
+//        let m2 = SCNMaterial()
+//        let m3 = SCNMaterial()
+//        let m4 = SCNMaterial()
+//        let m5 = SCNMaterial()
+//        let m6 = SCNMaterial()
+//
+//        m1.diffuse.contents = UIImage(named: "rect2")
+//        m2.diffuse.contents = UIImage(named: "rect3")
+//        m3.diffuse.contents = UIImage(named: "rect5")
+//        m4.diffuse.contents = UIImage(named: "rect4")
+//        m5.diffuse.contents = UIImage(named: "rect1")
+//        m6.diffuse.contents = UIImage(named: "rect6")
+//
+//        box.materials = [m1,m2,m3,m4,m5,m6]
+//
+//    }
+//
+//    func dicefemale() {
+//        let m1 = SCNMaterial()
+//        let m2 = SCNMaterial()
+//        let m3 = SCNMaterial()
+//        let m4 = SCNMaterial()
+//        let m5 = SCNMaterial()
+//        let m6 = SCNMaterial()
+//
+//        m1.diffuse.contents = UIImage(named: "rect2")
+//        m2.diffuse.contents = UIImage(named: "rect4")
+//        m3.diffuse.contents = UIImage(named: "rect5")
+//        m4.diffuse.contents = UIImage(named: "rect3")
+//        m5.diffuse.contents = UIImage(named: "rect1")
+//        m6.diffuse.contents = UIImage(named: "rect6")
+//
+//        box.materials = [m1,m2,m3,m4,m5,m6]
+//
+//    }
     
 }
