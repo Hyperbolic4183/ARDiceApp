@@ -25,6 +25,25 @@ class ViewController: UIViewController,ARSCNViewDelegate {
     var y = 0.0
     var z = 0.0
     
+    
+    
+    var planeNode1 = SCNNode()
+    var planeNode2 = SCNNode()
+    var planeNode3 = SCNNode()
+    var planeNode4 = SCNNode()
+    var planeNode5 = SCNNode()
+    var planeNode6 = SCNNode()
+    
+    
+    
+    let plane1 = SCNPlane(width: 0.05, height: 0.05)
+    let plane2 = SCNPlane(width: 0.05, height: 0.05)
+    let plane3 = SCNPlane(width: 0.05, height: 0.05)
+    let plane4 = SCNPlane(width: 0.05, height: 0.05)
+    let plane5 = SCNPlane(width: 0.05, height: 0.05)
+    let plane6 = SCNPlane(width: 0.05, height: 0.05)
+    
+    
     var angle = 0.0
     var scene = TestScene.init(kind: "male")
     override func viewDidLoad() {
@@ -42,6 +61,21 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         self.deleteButton.layer.cornerRadius = 10
         self.rightButton.layer.cornerRadius = 10
         self.leftButton.layer.cornerRadius = 10
+        
+        self.planeNode1.geometry = plane1
+        self.planeNode2.geometry = plane2
+        self.planeNode3.geometry = plane3
+        self.planeNode4.geometry = plane4
+        self.planeNode5.geometry = plane5
+        self.planeNode6.geometry = plane6
+        
+        self.planeNode1.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect1")
+        self.planeNode2.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect2")
+        self.planeNode3.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect3")
+        self.planeNode4.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect4")
+        self.planeNode5.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect5")
+        self.planeNode6.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect6")
+        
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -144,6 +178,7 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         x -= 0.05
     }
     
+    
     @IBAction func rightButton(_ sender: Any) {
         
         scene.emptyNode.position = SCNVector3(x: scene.planeDice.worldPosition.x+0.025,y: scene.planeDice.worldPosition.y-0.025,z: scene.planeDice.worldPosition.z)
@@ -154,13 +189,71 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         scene.emptyNode.runAction(rotateAnimation)
         x += 0.05
         
+        
+        let planeArr = [scene.plane1,scene.plane2,scene.plane3,scene.plane4,scene.plane5,scene.plane6]
+        
+        let minplane = minYposition(nodeArr: planeArr)
+        print(minplane)
+        switch minplane {
+        case scene.plane1:
+            let a = SCNNode()
+            let b = SCNPlane(width: 0.05, height: 0.05)
+            a.geometry = b
+            a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect1")
+            a.position = SCNVector3(x-0.05,y-0.025,z)
+            a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
+            scene.rootNode.addChildNode(a)
+            
+        case scene.plane2:
         let a = SCNNode()
         let b = SCNPlane(width: 0.05, height: 0.05)
         a.geometry = b
-        a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect1")
+        a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect2")
         a.position = SCNVector3(x-0.05,y-0.025,z)
         a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
         scene.rootNode.addChildNode(a)
+            
+        case scene.plane3:
+            let a = SCNNode()
+            let b = SCNPlane(width: 0.05, height: 0.05)
+            a.geometry = b
+            a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect3")
+            a.position = SCNVector3(x-0.05,y-0.025,z)
+            a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
+            scene.rootNode.addChildNode(a)
+            
+        case scene.plane4:
+        let a = SCNNode()
+        let b = SCNPlane(width: 0.05, height: 0.05)
+        a.geometry = b
+        a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect4")
+        a.position = SCNVector3(x-0.05,y-0.025,z)
+        a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
+        scene.rootNode.addChildNode(a)
+            
+        case scene.plane5:
+        let a = SCNNode()
+        let b = SCNPlane(width: 0.05, height: 0.05)
+        a.geometry = b
+        a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect5")
+        a.position = SCNVector3(x-0.05,y-0.025,z)
+        a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
+        scene.rootNode.addChildNode(a)
+        
+        default:
+            let a = SCNNode()
+            let b = SCNPlane(width: 0.05, height: 0.05)
+            a.geometry = b
+            a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect6")
+            a.position = SCNVector3(x-0.05,y-0.025,z)
+            a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
+            scene.rootNode.addChildNode(a)
+            print("minPlaneは\(minplane)")
+            print("scene.plane1は\(scene.plane1)")
+            if minplane == scene.plane6 {
+                print("yes")
+            } else { print("no") }
+        }
         
     }
     @IBAction func forwardButton(_ sender: Any) {
@@ -227,7 +320,18 @@ class ViewController: UIViewController,ARSCNViewDelegate {
             
         }
     }
-    
+    //SCNvector3
+    func minYposition(nodeArr :[SCNNode]) -> SCNNode {
+        var min: Float = 100.0
+        var index = 0
+        for i in 0 ..< nodeArr.count {
+            if min > nodeArr[i].worldPosition.y {
+                index = i
+                min = nodeArr[i].worldPosition.y
+            }
+        }
+        return nodeArr[index]
+    }
     
 }
 
