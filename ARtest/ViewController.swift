@@ -26,6 +26,7 @@ class ViewController: UIViewController,ARSCNViewDelegate {
     var z = 0.0
     
     
+    var duration = 0.1
     
     var planeNode1 = SCNNode()
     var planeNode2 = SCNNode()
@@ -173,110 +174,51 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         scene.emptyNode.addChildNode(scene.planeDice)
         scene.planeDice.worldPosition = SCNVector3(x,y,z)
         
-        let rotateAnimation = SCNAction.rotate(by: CGFloat(Float.pi/2), around: SCNVector3(0,0,1), duration: 0.1)
+        let rotateAnimation = SCNAction.rotate(by: CGFloat(Float.pi/2), around: SCNVector3(0,0,1), duration: duration)
         scene.emptyNode.runAction(rotateAnimation)
         x -= 0.05
+        bottomPlaneJudge(direction: "left")
     }
-    
     
     @IBAction func rightButton(_ sender: Any) {
         
         scene.emptyNode.position = SCNVector3(x: scene.planeDice.worldPosition.x+0.025,y: scene.planeDice.worldPosition.y-0.025,z: scene.planeDice.worldPosition.z)
-        
         scene.emptyNode.addChildNode(scene.planeDice)
         scene.planeDice.worldPosition = SCNVector3(x,y,z)
-        let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(0,0,1), duration: 0.1)
+        let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(0,0,1), duration: duration)
         scene.emptyNode.runAction(rotateAnimation)
         x += 0.05
-        
-        
-        let planeArr = [scene.plane1,scene.plane2,scene.plane3,scene.plane4,scene.plane5,scene.plane6]
-        
-        let minplane = minYposition(nodeArr: planeArr)
-        print(minplane)
-        switch minplane {
-        case scene.plane1:
-            let a = SCNNode()
-            let b = SCNPlane(width: 0.05, height: 0.05)
-            a.geometry = b
-            a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect1")
-            a.position = SCNVector3(x-0.05,y-0.025,z)
-            a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
-            scene.rootNode.addChildNode(a)
-            
-        case scene.plane2:
-        let a = SCNNode()
-        let b = SCNPlane(width: 0.05, height: 0.05)
-        a.geometry = b
-        a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect2")
-        a.position = SCNVector3(x-0.05,y-0.025,z)
-        a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
-        scene.rootNode.addChildNode(a)
-            
-        case scene.plane3:
-            let a = SCNNode()
-            let b = SCNPlane(width: 0.05, height: 0.05)
-            a.geometry = b
-            a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect3")
-            a.position = SCNVector3(x-0.05,y-0.025,z)
-            a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
-            scene.rootNode.addChildNode(a)
-            
-        case scene.plane4:
-        let a = SCNNode()
-        let b = SCNPlane(width: 0.05, height: 0.05)
-        a.geometry = b
-        a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect4")
-        a.position = SCNVector3(x-0.05,y-0.025,z)
-        a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
-        scene.rootNode.addChildNode(a)
-            
-        case scene.plane5:
-        let a = SCNNode()
-        let b = SCNPlane(width: 0.05, height: 0.05)
-        a.geometry = b
-        a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect5")
-        a.position = SCNVector3(x-0.05,y-0.025,z)
-        a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
-        scene.rootNode.addChildNode(a)
-        
-        default:
-            let a = SCNNode()
-            let b = SCNPlane(width: 0.05, height: 0.05)
-            a.geometry = b
-            a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect6")
-            a.position = SCNVector3(x-0.05,y-0.025,z)
-            a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
-            scene.rootNode.addChildNode(a)
-            print("minPlaneは\(minplane)")
-            print("scene.plane1は\(scene.plane1)")
-            if minplane == scene.plane6 {
-                print("yes")
-            } else { print("no") }
-        }
+        bottomPlaneJudge(direction: "right")
         
     }
     @IBAction func forwardButton(_ sender: Any) {
         scene.emptyNode.position = SCNVector3(x: scene.planeDice.worldPosition.x,y: scene.planeDice.worldPosition.y-0.025,z: scene.planeDice.worldPosition.z+0.025)
         scene.emptyNode.addChildNode(scene.planeDice)
         scene.planeDice.worldPosition = SCNVector3(x,y,z)
-        let rotateAnimation = SCNAction.rotate(by: CGFloat(Float.pi/2), around: SCNVector3(1,0,0), duration: 0.1)
+        let rotateAnimation = SCNAction.rotate(by: CGFloat(Float.pi/2), around: SCNVector3(1,0,0), duration: duration)
         scene.emptyNode.runAction(rotateAnimation)
         z += 0.05
+        bottomPlaneJudge(direction: "forward")
     }
     @IBAction func backButton(_ sender: Any) {
         scene.emptyNode.position = SCNVector3(x: scene.planeDice.worldPosition.x,y: scene.planeDice.worldPosition.y-0.025,z: scene.planeDice.worldPosition.z-0.025)
         scene.emptyNode.addChildNode(scene.planeDice)
         scene.planeDice.worldPosition = SCNVector3(x,y,z)
-        let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(1,0,0), duration: 0.1)
+        let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(1,0,0), duration: duration)
         scene.emptyNode.runAction(rotateAnimation)
         z -= 0.05
+        bottomPlaneJudge(direction: "back")
     }
     
     func rightrotate(node: SCNNode) {
         let angle = 90.degreeToRadians
         node.eulerAngles = SCNVector3(0,0,-angle)
     }
+    
+    @IBAction func durationSlider(_ sender: UISlider) {
+        duration = Double(sender.value)
+    }
+    
     @IBAction func changeKind(_ sender: UISwitch) {
         if sender.isOn {
             self.sceneView.scene.rootNode.enumerateChildNodes{ ( node,stop )in
@@ -320,6 +262,122 @@ class ViewController: UIViewController,ARSCNViewDelegate {
             
         }
     }
+    func bottomPlaneJudge(direction: String) {
+        y += 0.0000001
+           let planeArr = [scene.plane1,scene.plane2,scene.plane3,scene.plane4,scene.plane5,scene.plane6]
+           let minplane = minYposition(nodeArr: planeArr)
+           switch minplane {
+           case scene.plane1:
+               let a = SCNNode()
+               let b = SCNPlane(width: 0.05, height: 0.05)
+               a.geometry = b
+               a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect1")
+               switch direction {
+               case "right":
+                a.position = SCNVector3(x-0.05,y-0.025,z)
+               case "left":
+            a.position = SCNVector3(x+0.05,y-0.025,z)
+               case "forward":
+                a.position = SCNVector3(x,y-0.025,z-0.05)
+               default:
+                a.position = SCNVector3(x,y-0.025,z+0.05)
+               }
+               a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
+               scene.rootNode.addChildNode(a)
+               
+           case scene.plane2:
+           let a = SCNNode()
+           let b = SCNPlane(width: 0.05, height: 0.05)
+           a.geometry = b
+           a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect2")
+           switch direction {
+              case "right":
+               a.position = SCNVector3(x-0.05,y-0.025,z)
+              case "left":
+           a.position = SCNVector3(x+0.05,y-0.025,z)
+              case "forward":
+               a.position = SCNVector3(x,y-0.025,z-0.05)
+              default:
+               a.position = SCNVector3(x,y-0.025,z+0.05)
+              }
+           a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
+           scene.rootNode.addChildNode(a)
+               
+           case scene.plane3:
+               let a = SCNNode()
+               let b = SCNPlane(width: 0.05, height: 0.05)
+               a.geometry = b
+               a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect3")
+               switch direction {
+                  case "right":
+                   a.position = SCNVector3(x-0.05,y-0.025,z)
+                  case "left":
+               a.position = SCNVector3(x+0.05,y-0.025,z)
+                  case "forward":
+                   a.position = SCNVector3(x,y-0.025,z-0.05)
+                  default:
+                   a.position = SCNVector3(x,y-0.025,z+0.05)
+                  }
+               a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
+               scene.rootNode.addChildNode(a)
+               
+           case scene.plane4:
+           let a = SCNNode()
+           let b = SCNPlane(width: 0.05, height: 0.05)
+           a.geometry = b
+           a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect4")
+           switch direction {
+              case "right":
+               a.position = SCNVector3(x-0.05,y-0.025,z)
+              case "left":
+           a.position = SCNVector3(x+0.05,y-0.025,z)
+              case "forward":
+               a.position = SCNVector3(x,y-0.025,z-0.05)
+              default:
+               a.position = SCNVector3(x,y-0.025,z+0.05)
+              }
+           a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
+           scene.rootNode.addChildNode(a)
+               
+           case scene.plane5:
+           let a = SCNNode()
+           let b = SCNPlane(width: 0.05, height: 0.05)
+           a.geometry = b
+           a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect5")
+           switch direction {
+              case "right":
+               a.position = SCNVector3(x-0.05,y-0.025,z)
+              case "left":
+           a.position = SCNVector3(x+0.05,y-0.025,z)
+              case "forward":
+               a.position = SCNVector3(x,y-0.025,z-0.05)
+              default:
+               a.position = SCNVector3(x,y-0.025,z+0.05)
+              }
+           a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
+           scene.rootNode.addChildNode(a)
+           
+           default:
+               let a = SCNNode()
+               let b = SCNPlane(width: 0.05, height: 0.05)
+               a.geometry = b
+               a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect6")
+               switch direction {
+                  case "right":
+                   a.position = SCNVector3(x-0.05,y-0.025,z)
+                  case "left":
+               a.position = SCNVector3(x+0.05,y-0.025,z)
+                  case "forward":
+                   a.position = SCNVector3(x,y-0.025,z-0.05)
+                  default:
+                   a.position = SCNVector3(x,y-0.025,z+0.05)
+                  }
+               a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
+               scene.rootNode.addChildNode(a)
+               print("minPlaneは\(minplane)")
+               print("scene.plane1は\(scene.plane1)")
+           }
+       }
     //SCNvector3
     func minYposition(nodeArr :[SCNNode]) -> SCNNode {
         var min: Float = 100.0
@@ -483,43 +541,5 @@ class TestScene: SCNScene {
         self.plane6.position = SCNVector3(0,-0.025,0)
         self.plane6.eulerAngles = SCNVector3(90.degreeToRadians,0,0)
     }
-//
-//    func diceMale() {
-//        let m1 = SCNMaterial()
-//        let m2 = SCNMaterial()
-//        let m3 = SCNMaterial()
-//        let m4 = SCNMaterial()
-//        let m5 = SCNMaterial()
-//        let m6 = SCNMaterial()
-//
-//        m1.diffuse.contents = UIImage(named: "rect2")
-//        m2.diffuse.contents = UIImage(named: "rect3")
-//        m3.diffuse.contents = UIImage(named: "rect5")
-//        m4.diffuse.contents = UIImage(named: "rect4")
-//        m5.diffuse.contents = UIImage(named: "rect1")
-//        m6.diffuse.contents = UIImage(named: "rect6")
-//
-//        box.materials = [m1,m2,m3,m4,m5,m6]
-//
-//    }
-//
-//    func dicefemale() {
-//        let m1 = SCNMaterial()
-//        let m2 = SCNMaterial()
-//        let m3 = SCNMaterial()
-//        let m4 = SCNMaterial()
-//        let m5 = SCNMaterial()
-//        let m6 = SCNMaterial()
-//
-//        m1.diffuse.contents = UIImage(named: "rect2")
-//        m2.diffuse.contents = UIImage(named: "rect4")
-//        m3.diffuse.contents = UIImage(named: "rect5")
-//        m4.diffuse.contents = UIImage(named: "rect3")
-//        m5.diffuse.contents = UIImage(named: "rect1")
-//        m6.diffuse.contents = UIImage(named: "rect6")
-//
-//        box.materials = [m1,m2,m3,m4,m5,m6]
-//
-//    }
     
 }

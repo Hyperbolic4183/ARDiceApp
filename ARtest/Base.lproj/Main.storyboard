@@ -25,14 +25,24 @@
                                         <rect key="frame" x="0.0" y="0.0" width="132" height="150"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Lup-e9-d2t">
-                                                <rect key="frame" x="0.0" y="0.0" width="132" height="105"/>
+                                                <rect key="frame" x="0.0" y="0.0" width="132" height="60"/>
                                                 <color key="backgroundColor" systemColor="systemGray4Color" red="0.81960784310000001" green="0.81960784310000001" blue="0.83921568629999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="60" id="kvR-gh-IYR"/>
+                                                </constraints>
                                                 <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <state key="normal" title="ここに置く"/>
                                                 <connections>
                                                     <action selector="dicecreateButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="hkn-FN-2s2"/>
                                                 </connections>
                                             </button>
+                                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.10000000000000001" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="KHG-wc-JjF">
+                                                <rect key="frame" x="-2" y="75" width="136" height="31"/>
+                                                <color key="tintColor" systemColor="systemGray4Color" red="0.81960784310000001" green="0.81960784310000001" blue="0.83921568629999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <connections>
+                                                    <action selector="durationSlider:" destination="BYZ-38-t0r" eventType="valueChanged" id="AQH-cS-roW"/>
+                                                </connections>
+                                            </slider>
                                             <stackView opaque="NO" contentMode="scaleToFill" spacing="15" translatesAutoresizingMaskIntoConstraints="NO" id="OSg-ig-iVo">
                                                 <rect key="frame" x="0.0" y="120" width="132" height="30"/>
                                                 <subviews>
