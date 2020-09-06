@@ -49,6 +49,7 @@ class ViewController: UIViewController,ARSCNViewDelegate {
     var scene = TestScene.init(kind: "male")
     override func viewDidLoad() {
         super.viewDidLoad()
+        overrideUserInterfaceStyle = .light
         self.sceneView.delegate = self
         self.sceneView.scene = scene
         self.configuration.planeDetection = .horizontal
@@ -169,6 +170,7 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         
     }
     @IBAction func leftButton(_ sender: Any) {
+        buttonInvalid()
         scene.emptyNode.position = SCNVector3(x: scene.planeDice.worldPosition.x-0.025,y: scene.planeDice.worldPosition.y-0.025,z: scene.planeDice.worldPosition.z)
         
         scene.emptyNode.addChildNode(scene.planeDice)
@@ -181,7 +183,7 @@ class ViewController: UIViewController,ARSCNViewDelegate {
     }
     
     @IBAction func rightButton(_ sender: Any) {
-        
+        buttonInvalid()
         scene.emptyNode.position = SCNVector3(x: scene.planeDice.worldPosition.x+0.025,y: scene.planeDice.worldPosition.y-0.025,z: scene.planeDice.worldPosition.z)
         scene.emptyNode.addChildNode(scene.planeDice)
         scene.planeDice.worldPosition = SCNVector3(x,y,z)
@@ -191,7 +193,32 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         bottomPlaneJudge(direction: "right")
         
     }
+    func buttonInvalid() {
+        self.rightButton.isEnabled = false
+        self.leftButton.isEnabled = false
+        self.forwardButton.isEnabled = false
+        self.backButtin.isEnabled = false
+        
+        self.rightButton.tintColor = UIColor.white
+        self.leftButton.tintColor = UIColor.white
+        self.forwardButton.tintColor = UIColor.white
+        self.backButtin.tintColor = UIColor.white
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + duration) {
+            self.rightButton.isEnabled = true
+            self.leftButton.isEnabled = true
+            self.forwardButton.isEnabled = true
+            self.backButtin.isEnabled = true
+            
+            self.rightButton.tintColor = UIColor.black
+            self.leftButton.tintColor = UIColor.black
+            self.forwardButton.tintColor = UIColor.black
+            self.backButtin.tintColor = UIColor.black
+        }
+    }
+    
     @IBAction func forwardButton(_ sender: Any) {
+        buttonInvalid()
         scene.emptyNode.position = SCNVector3(x: scene.planeDice.worldPosition.x,y: scene.planeDice.worldPosition.y-0.025,z: scene.planeDice.worldPosition.z+0.025)
         scene.emptyNode.addChildNode(scene.planeDice)
         scene.planeDice.worldPosition = SCNVector3(x,y,z)
@@ -201,6 +228,7 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         bottomPlaneJudge(direction: "forward")
     }
     @IBAction func backButton(_ sender: Any) {
+        buttonInvalid()
         scene.emptyNode.position = SCNVector3(x: scene.planeDice.worldPosition.x,y: scene.planeDice.worldPosition.y-0.025,z: scene.planeDice.worldPosition.z-0.025)
         scene.emptyNode.addChildNode(scene.planeDice)
         scene.planeDice.worldPosition = SCNVector3(x,y,z)
