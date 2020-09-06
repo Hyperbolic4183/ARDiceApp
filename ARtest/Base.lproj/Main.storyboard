@@ -62,6 +62,9 @@
                                                         </constraints>
                                                         <color key="tintColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                         <state key="normal" title="消す"/>
+                                                        <connections>
+                                                            <action selector="deleteButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="TCr-0q-emd"/>
+                                                        </connections>
                                                     </button>
                                                 </subviews>
                                             </stackView>

@@ -25,7 +25,6 @@ class ViewController: UIViewController,ARSCNViewDelegate {
     var y = 0.0
     var z = 0.0
     
-    
     var duration = 0.1
     
     var planeNode1 = SCNNode()
@@ -35,8 +34,6 @@ class ViewController: UIViewController,ARSCNViewDelegate {
     var planeNode5 = SCNNode()
     var planeNode6 = SCNNode()
     
-    
-    
     let plane1 = SCNPlane(width: 0.05, height: 0.05)
     let plane2 = SCNPlane(width: 0.05, height: 0.05)
     let plane3 = SCNPlane(width: 0.05, height: 0.05)
@@ -44,8 +41,9 @@ class ViewController: UIViewController,ARSCNViewDelegate {
     let plane5 = SCNPlane(width: 0.05, height: 0.05)
     let plane6 = SCNPlane(width: 0.05, height: 0.05)
     
+    var angle: Double = 0.0
+    var kind = "male"
     
-    var angle = 0.0
     var scene = TestScene.init(kind: "male")
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -89,25 +87,19 @@ class ViewController: UIViewController,ARSCNViewDelegate {
     
     func createBox(hitTestResult: ARHitTestResult){
         
-        if (self.sceneView.scene.rootNode.childNode(withName: "box", recursively: true) != nil) {
-            self.sceneView.scene.rootNode.enumerateChildNodes{ ( node,stop )in
-                node.removeFromParentNode()
-                }
-            //2回目なら呼ばれる
-        }
-        
         let transform = hitTestResult.worldTransform
         let thirdColumn = transform.columns.3
-        let boxNode = scene.boxNode
         let planeDice = scene.planeDice
+        
 //        if let camera = self.sceneView.pointOfView {
-//            boxNode.eulerAngles = SCNVector3(0,camera.eulerAngles.y + Float(180.degreeToRadians),0)
+//            planeDice.eulerAngles = SCNVector3(0,/*camera.eulerAngles.y + Float(180.degreeToRadians)*/0,0)
+//            angle = Double(camera.eulerAngles.y + Float(180.degreeToRadians))
 //        }
         
-        boxNode.geometry?.firstMaterial?.lightingModel = .constant
-        boxNode.position = SCNVector3(thirdColumn.x,thirdColumn.y,thirdColumn.z)
-        //sceneView.scene.rootNode.addChildNode(boxNode)
+        planeDice.geometry?.firstMaterial?.lightingModel = .constant
         planeDice.position = SCNVector3(thirdColumn.x,thirdColumn.y,thirdColumn.z)
+        planeDice.eulerAngles = SCNVector3(0,45.degreeToRadians,0)
+       // planeDice.eulerAngles = SCNVector3(0,angle,0)
         sceneView.scene.rootNode.addChildNode(planeDice)
         
         self.x = Double(thirdColumn.x)
@@ -156,6 +148,11 @@ class ViewController: UIViewController,ARSCNViewDelegate {
     }
     
     @IBAction func dicecreateButton(_ sender: Any) {
+        self.sceneView.scene.rootNode.enumerateChildNodes{ ( node,stop )in
+        node.removeFromParentNode()
+        }
+        self.scene = TestScene(kind: kind)
+        self.sceneView.scene = scene
         let centerPositionX = self.sceneView.bounds.width/2
         let centerPositionY = self.sceneView.bounds.height/2
         let centerLocation = CGPoint(x: centerPositionX, y: centerPositionY)
@@ -163,11 +160,15 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         if !hitTest.isEmpty {
             print("hit")
             self.createBox(hitTestResult: hitTest.first!)
-            
         } else {
             print("don't hit")
         }
-        
+    }
+    
+    @IBAction func deleteButton(_ sender: Any) {
+        self.sceneView.scene.rootNode.enumerateChildNodes{ ( node,stop )in
+        node.removeFromParentNode()
+        }
     }
     @IBAction func leftButton(_ sender: Any) {
         buttonInvalid()
@@ -184,13 +185,24 @@ class ViewController: UIViewController,ARSCNViewDelegate {
     
     @IBAction func rightButton(_ sender: Any) {
         buttonInvalid()
-        scene.emptyNode.position = SCNVector3(x: scene.planeDice.worldPosition.x+0.025,y: scene.planeDice.worldPosition.y-0.025,z: scene.planeDice.worldPosition.z)
+        var newEmptyPosition = yRotation(standardVector: [0.025,-0.025,0], angle: 45.degreeToRadians)
+        print(newEmptyPosition)
+        scene.emptyNode.position = SCNVector3(x: scene.planeDice.worldPosition.x+Float(newEmptyPosition.x),y: scene.planeDice.worldPosition.y+Float(newEmptyPosition.y),z: scene.planeDice.worldPosition.z+newEmptyPosition.z)
+        
+        scene.emptyNode.eulerAngles = SCNVector3(0,45.degreeToRadians,0)
+        //scene.emptyNode.eulerAngles = SCNVector3(0,angle,0)
+        
+        var rotatedAxis = yRotation(standardVector: [0,0,1], angle: 45.degreeToRadians)
+        var rotatedVector = yRotation(standardVector: [0,0,1], angle: 45.degreeToRadians)
+        
         scene.emptyNode.addChildNode(scene.planeDice)
         scene.planeDice.worldPosition = SCNVector3(x,y,z)
-        let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(0,0,1), duration: duration)
-        scene.emptyNode.runAction(rotateAnimation)
-        x += 0.05
-        bottomPlaneJudge(direction: "right")
+        scene.planeDice.eulerAngles = SCNVector3(0,45.degreeToRadians,0)
+        //ここまでOK
+        let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: rotatedVector, duration: duration)
+        //scene.emptyNode.runAction(rotateAnimation)
+        x += Double(newEmptyPosition.x)//0.05
+        //bottomPlaneJudge(direction: "right")
         
     }
     func buttonInvalid() {
@@ -236,11 +248,6 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         scene.emptyNode.runAction(rotateAnimation)
         z -= 0.05
         bottomPlaneJudge(direction: "back")
-    }
-    
-    func rightrotate(node: SCNNode) {
-        let angle = 90.degreeToRadians
-        node.eulerAngles = SCNVector3(0,0,-angle)
     }
     
     @IBAction func durationSlider(_ sender: UISlider) {
@@ -291,7 +298,7 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         }
     }
     func bottomPlaneJudge(direction: String) {
-        y += 0.0000001
+        y += 0.00000001
            let planeArr = [scene.plane1,scene.plane2,scene.plane3,scene.plane4,scene.plane5,scene.plane6]
            let minplane = minYposition(nodeArr: planeArr)
            switch minplane {
@@ -417,6 +424,17 @@ class ViewController: UIViewController,ARSCNViewDelegate {
             }
         }
         return nodeArr[index]
+    }
+    
+    func yRotation(standardVector: [Double],angle: Double) -> SCNVector3 {
+        let matrix = [[cos(angle),0,-sin(angle)],[0,1,0],[sin(angle),0,cos(angle)]]
+        var ansVector = [Double](repeating: 0, count: 3)
+        for i in 0 ..< 3 {
+            for j in 0 ..< 3 {
+                ansVector[i] += standardVector[i] * matrix[j][i]
+            }
+        }
+        return SCNVector3(ansVector[0],ansVector[1],ansVector[2])
     }
     
 }
