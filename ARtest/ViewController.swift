@@ -172,7 +172,7 @@ class ViewController: UIViewController,ARSCNViewDelegate {
     }
     @IBAction func leftButton(_ sender: Any) {
         buttonInvalid()
-        scene.emptyNode.position = SCNVector3(x: scene.planeDice.worldPosition.x-0.025,y: scene.planeDice.worldPosition.y-0.025,z: scene.planeDice.worldPosition.z)
+        scene.emptyNode.position = SCNVector3(x: scene.planeDice.worldPosition.x-0.025,y: scene.planeDice.worldPosition.y,z: scene.planeDice.worldPosition.z)
         
         scene.emptyNode.addChildNode(scene.planeDice)
         scene.planeDice.worldPosition = SCNVector3(x,y,z)
@@ -185,24 +185,20 @@ class ViewController: UIViewController,ARSCNViewDelegate {
     
     @IBAction func rightButton(_ sender: Any) {
         buttonInvalid()
-        var newEmptyPosition = yRotation(standardVector: [0.025,-0.025,0], angle: 45.degreeToRadians)
-        print(newEmptyPosition)
-        scene.emptyNode.position = SCNVector3(x: scene.planeDice.worldPosition.x+Float(newEmptyPosition.x),y: scene.planeDice.worldPosition.y+Float(newEmptyPosition.y),z: scene.planeDice.worldPosition.z+newEmptyPosition.z)
+        
+        scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos(45.degreeToRadians))*0.025,scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(sin(45.degreeToRadians))*0.025)
         
         scene.emptyNode.eulerAngles = SCNVector3(0,45.degreeToRadians,0)
-        //scene.emptyNode.eulerAngles = SCNVector3(0,angle,0)
-        
-        var rotatedAxis = yRotation(standardVector: [0,0,1], angle: 45.degreeToRadians)
-        var rotatedVector = yRotation(standardVector: [0,0,1], angle: 45.degreeToRadians)
         
         scene.emptyNode.addChildNode(scene.planeDice)
         scene.planeDice.worldPosition = SCNVector3(x,y,z)
-        scene.planeDice.eulerAngles = SCNVector3(0,45.degreeToRadians,0)
-        //ここまでOK
-        let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: rotatedVector, duration: duration)
-        //scene.emptyNode.runAction(rotateAnimation)
-        x += Double(newEmptyPosition.x)//0.05
-        //bottomPlaneJudge(direction: "right")
+        scene.planeDice.eulerAngles = SCNVector3(0,0,0)
+        
+        let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(cos(90.degreeToRadians+45.degreeToRadians),0,sin(90.degreeToRadians+45.degreeToRadians)), duration: duration)
+        scene.emptyNode.runAction(rotateAnimation)
+        x += 2*cos(45.degreeToRadians)*0.025
+        z += 2*sin(45.degreeToRadians)*0.025
+        bottomPlaneJudge(direction: "right")
         
     }
     func buttonInvalid() {
