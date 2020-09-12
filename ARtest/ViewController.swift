@@ -96,11 +96,10 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         let planeDice = scene.planeDice
         
         if let camera = self.sceneView.pointOfView {
-            angle = 60//Double(camera.eulerAngles.y)*360
-            print("角度は\(camera.eulerAngles)です")
-            print(360*camera.eulerAngles.y)
+            angle = Double(camera.eulerAngles.y)
+            
             //planeDice.eulerAngles = SCNVector3(0,camera.eulerAngles.y,0)
-            //planeDice.eulerAngles = SCNVector3(0,angle.degreeToRadians,0)
+            planeDice.eulerAngles = SCNVector3(0,angle,0)
         }
         
         planeDice.geometry?.firstMaterial?.lightingModel = .constant
@@ -177,71 +176,101 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         }
     }
     @IBAction func leftButton(_ sender: Any) {
+//        buttonInvalid()
+//
+//        scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos((angle+180).degreeToRadians))*0.025,scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(-sin((angle+180).degreeToRadians))*0.025)
+//
+//        scene.emptyNode.eulerAngles = SCNVector3(0,(angle+180).degreeToRadians,0)
+//
+//        scene.emptyNode.addChildNode(scene.planeDice)
+//        scene.planeDice.worldPosition = SCNVector3(x,y,z)
+//        scene.planeDice.eulerAngles = SCNVector3(0,0,0)
+//
+//        let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(sin((angle+180).degreeToRadians),0,cos((angle+180).degreeToRadians)), duration: duration)
+//        scene.emptyNode.runAction(rotateAnimation)
+//        x += 2*cos((angle+180).degreeToRadians)*0.025
+//        z += -2*sin((angle+180).degreeToRadians)*0.025
         buttonInvalid()
         
-        scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos((angle+180).degreeToRadians))*0.025,scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(-sin((angle+180).degreeToRadians))*0.025)
+        scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos(angle+Double.pi))*0.025,scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(-sin(angle+Double.pi))*0.025)
         
-        scene.emptyNode.eulerAngles = SCNVector3(0,(angle+180).degreeToRadians,0)
+        scene.emptyNode.eulerAngles = SCNVector3(0,(angle+Double.pi),0)
         
         scene.emptyNode.addChildNode(scene.planeDice)
         scene.planeDice.worldPosition = SCNVector3(x,y,z)
         scene.planeDice.eulerAngles = SCNVector3(0,0,0)
         
-        let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(sin((angle+180).degreeToRadians),0,cos((angle+180).degreeToRadians)), duration: duration)
+        let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(sin(angle+Double.pi),0,cos(angle+Double.pi)), duration: duration)
         scene.emptyNode.runAction(rotateAnimation)
-        x += 2*cos((angle+180).degreeToRadians)*0.025
-        z += -2*sin((angle+180).degreeToRadians)*0.025
+        x += 2*cos(angle+Double.pi)*0.025
+        z += -2*sin(angle+Double.pi)*0.025
     }
     
     @IBAction func rightButton(_ sender: Any) {
+//        buttonInvalid()
+//
+//               scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos((angle).degreeToRadians))*0.025,scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(-sin((angle).degreeToRadians))*0.025)
+//
+//               scene.emptyNode.eulerAngles = SCNVector3(0,angle.degreeToRadians,0)
+//
+//               scene.emptyNode.addChildNode(scene.planeDice)
+//               scene.planeDice.worldPosition = SCNVector3(x,y,z)
+//               scene.planeDice.eulerAngles = SCNVector3(0,0,0)
+//
+//               let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(sin(angle.degreeToRadians),0,cos(angle.degreeToRadians)), duration: duration)
+//               scene.emptyNode.runAction(rotateAnimation)
+//               x += 2*cos(angle.degreeToRadians)*0.025
+//               z += -2*sin(angle.degreeToRadians)*0.025
         buttonInvalid()
-               
-               scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos((angle).degreeToRadians))*0.025,scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(-sin((angle).degreeToRadians))*0.025)
-               
-               scene.emptyNode.eulerAngles = SCNVector3(0,angle.degreeToRadians,0)
-               
-               scene.emptyNode.addChildNode(scene.planeDice)
-               scene.planeDice.worldPosition = SCNVector3(x,y,z)
-               scene.planeDice.eulerAngles = SCNVector3(0,0,0)
-               
-               let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(sin(angle.degreeToRadians),0,cos(angle.degreeToRadians)), duration: duration)
-               scene.emptyNode.runAction(rotateAnimation)
-               x += 2*cos(angle.degreeToRadians)*0.025
-               z += -2*sin(angle.degreeToRadians)*0.025
+        
+        scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos(angle)*0.025),scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(-sin(angle))*0.025)
+        
+        scene.emptyNode.eulerAngles = SCNVector3(0,angle,0)
+        
+        scene.emptyNode.addChildNode(scene.planeDice)
+        scene.planeDice.worldPosition = SCNVector3(x,y,z)
+        scene.planeDice.eulerAngles = SCNVector3(0,0,0)
+        
+        let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(sin(angle),0,cos(angle)), duration: duration)
+        scene.emptyNode.runAction(rotateAnimation)
+        x += 2*cos(angle)*0.025
+        z += -2*sin(angle)*0.025
     }
     
     
     @IBAction func forwardButton(_ sender: Any) {
         buttonInvalid()
-        
-        scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos((angle+90).degreeToRadians))*0.025,scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(-sin((angle+90).degreeToRadians))*0.025)
-        
-        scene.emptyNode.eulerAngles = SCNVector3(0,(angle+90).degreeToRadians,0)
-        
-        scene.emptyNode.addChildNode(scene.planeDice)
-        scene.planeDice.worldPosition = SCNVector3(x,y,z)
-        scene.planeDice.eulerAngles = SCNVector3(0,0,0)
-        
-        let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(sin((angle+90).degreeToRadians),0,cos((angle+90).degreeToRadians)), duration: duration)
-        scene.emptyNode.runAction(rotateAnimation)
-        x += 2*cos((angle+90).degreeToRadians)*0.025
-        z += -2*sin((angle+90).degreeToRadians)*0.025
+               
+               scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos(angle+(Double.pi/2)*3))*0.025,scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(-sin(angle+(Double.pi/2)*3))*0.025)
+               
+               scene.emptyNode.eulerAngles = SCNVector3(0,angle+(Double.pi/2)*3,0)
+               
+               scene.emptyNode.addChildNode(scene.planeDice)
+               scene.planeDice.worldPosition = SCNVector3(x,y,z)
+               scene.planeDice.eulerAngles = SCNVector3(0,0,0)
+               
+               let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(sin(angle+(Double.pi/2)*3),0,cos(angle+(Double.pi/2)*3)), duration: duration)
+               scene.emptyNode.runAction(rotateAnimation)
+               x += 2*cos(angle+(Double.pi/2)*3)*0.025
+               z += -2*sin(angle+(Double.pi/2)*3)*0.025
     }
     @IBAction func backButton(_ sender: Any) {
         buttonInvalid()
         
-        scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos((angle+270).degreeToRadians))*0.025,scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(-sin((angle+270).degreeToRadians))*0.025)
+        scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos(angle+(Double.pi/2)*1))*0.025,scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(-sin(angle+(Double.pi/2)*1))*0.025)
         
-        scene.emptyNode.eulerAngles = SCNVector3(0,(angle+270).degreeToRadians,0)
+        scene.emptyNode.eulerAngles = SCNVector3(0,angle+(Double.pi/2)*3,0)
         
         scene.emptyNode.addChildNode(scene.planeDice)
         scene.planeDice.worldPosition = SCNVector3(x,y,z)
         scene.planeDice.eulerAngles = SCNVector3(0,0,0)
         
-        let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(sin((angle+270).degreeToRadians),0,cos((angle+270).degreeToRadians)), duration: duration)
+        let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(sin(angle+(Double.pi/2)*1),0,cos(angle+(Double.pi/2)*1)), duration: duration)
         scene.emptyNode.runAction(rotateAnimation)
-        x += 2*cos((angle+270).degreeToRadians)*0.025
-        z += -2*sin((angle+270).degreeToRadians)*0.025
+        x += 2*cos(angle+(Double.pi/2)*1)*0.025
+        z += -2*sin(angle+(Double.pi/2)*1)*0.025
+        
+       
     }
     
     @IBAction func durationSlider(_ sender: UISlider) {
