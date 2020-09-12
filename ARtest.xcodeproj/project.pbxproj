@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4776468B250B8E5000E03FAC /* TestScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4776468A250B8E5000E03FAC /* TestScene.swift */; };
 		47EA43D424F9DB0F005DBB46 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EA43D324F9DB0F005DBB46 /* AppDelegate.swift */; };
 		47EA43D624F9DB0F005DBB46 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EA43D524F9DB0F005DBB46 /* SceneDelegate.swift */; };
 		47EA43D824F9DB0F005DBB46 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 47EA43D724F9DB0F005DBB46 /* ViewController.swift */; };
@@ -18,6 +19,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4776468A250B8E5000E03FAC /* TestScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestScene.swift; sourceTree = "<group>"; };
 		47EA43D024F9DB0F005DBB46 /* ARtest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ARtest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		47EA43D324F9DB0F005DBB46 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		47EA43D524F9DB0F005DBB46 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -63,6 +65,7 @@
 				47EA43D324F9DB0F005DBB46 /* AppDelegate.swift */,
 				47EA43D524F9DB0F005DBB46 /* SceneDelegate.swift */,
 				47EA43D724F9DB0F005DBB46 /* ViewController.swift */,
+				4776468A250B8E5000E03FAC /* TestScene.swift */,
 				47EA43D924F9DB0F005DBB46 /* Main.storyboard */,
 				47EA43DC24F9DB11005DBB46 /* Assets.xcassets */,
 				47EA43DE24F9DB11005DBB46 /* LaunchScreen.storyboard */,
@@ -149,6 +152,7 @@
 				47EA43D424F9DB0F005DBB46 /* AppDelegate.swift in Sources */,
 				47EA43D624F9DB0F005DBB46 /* SceneDelegate.swift in Sources */,
 				47EA43E824F9DD70005DBB46 /* Node.swift in Sources */,
+				4776468B250B8E5000E03FAC /* TestScene.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
