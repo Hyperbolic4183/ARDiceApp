@@ -97,8 +97,6 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         
         if let camera = self.sceneView.pointOfView {
             angle = Double(camera.eulerAngles.y)
-            
-            //planeDice.eulerAngles = SCNVector3(0,camera.eulerAngles.y,0)
             planeDice.eulerAngles = SCNVector3(0,angle,0)
         }
         
@@ -176,65 +174,37 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         }
     }
     @IBAction func leftButton(_ sender: Any) {
-//        buttonInvalid()
-//
-//        scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos((angle+180).degreeToRadians))*0.025,scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(-sin((angle+180).degreeToRadians))*0.025)
-//
-//        scene.emptyNode.eulerAngles = SCNVector3(0,(angle+180).degreeToRadians,0)
-//
-//        scene.emptyNode.addChildNode(scene.planeDice)
-//        scene.planeDice.worldPosition = SCNVector3(x,y,z)
-//        scene.planeDice.eulerAngles = SCNVector3(0,0,0)
-//
-//        let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(sin((angle+180).degreeToRadians),0,cos((angle+180).degreeToRadians)), duration: duration)
-//        scene.emptyNode.runAction(rotateAnimation)
-//        x += 2*cos((angle+180).degreeToRadians)*0.025
-//        z += -2*sin((angle+180).degreeToRadians)*0.025
         buttonInvalid()
         
         scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos(angle+Double.pi))*0.025,scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(-sin(angle+Double.pi))*0.025)
         
-        scene.emptyNode.eulerAngles = SCNVector3(0,(angle+Double.pi),0)
-        
         scene.emptyNode.addChildNode(scene.planeDice)
         scene.planeDice.worldPosition = SCNVector3(x,y,z)
-        scene.planeDice.eulerAngles = SCNVector3(0,0,0)
         
         let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(sin(angle+Double.pi),0,cos(angle+Double.pi)), duration: duration)
         scene.emptyNode.runAction(rotateAnimation)
+        bottomPlaneJudge(direction: "left")
         x += 2*cos(angle+Double.pi)*0.025
         z += -2*sin(angle+Double.pi)*0.025
+        
     }
     
     @IBAction func rightButton(_ sender: Any) {
-//        buttonInvalid()
-//
-//               scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos((angle).degreeToRadians))*0.025,scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(-sin((angle).degreeToRadians))*0.025)
-//
-//               scene.emptyNode.eulerAngles = SCNVector3(0,angle.degreeToRadians,0)
-//
-//               scene.emptyNode.addChildNode(scene.planeDice)
-//               scene.planeDice.worldPosition = SCNVector3(x,y,z)
-//               scene.planeDice.eulerAngles = SCNVector3(0,0,0)
-//
-//               let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(sin(angle.degreeToRadians),0,cos(angle.degreeToRadians)), duration: duration)
-//               scene.emptyNode.runAction(rotateAnimation)
-//               x += 2*cos(angle.degreeToRadians)*0.025
-//               z += -2*sin(angle.degreeToRadians)*0.025
         buttonInvalid()
         
         scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos(angle)*0.025),scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(-sin(angle))*0.025)
         
-        scene.emptyNode.eulerAngles = SCNVector3(0,angle,0)
-        
         scene.emptyNode.addChildNode(scene.planeDice)
         scene.planeDice.worldPosition = SCNVector3(x,y,z)
-        scene.planeDice.eulerAngles = SCNVector3(0,0,0)
-        
         let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(sin(angle),0,cos(angle)), duration: duration)
+        
         scene.emptyNode.runAction(rotateAnimation)
-        x += 2*cos(angle)*0.025
-        z += -2*sin(angle)*0.025
+        
+        bottomPlaneJudge(direction: "right")
+        
+        x += cos(angle)*0.05
+        z += -sin(angle)*0.05
+        
     }
     
     
@@ -243,34 +213,30 @@ class ViewController: UIViewController,ARSCNViewDelegate {
                
                scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos(angle+(Double.pi/2)*3))*0.025,scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(-sin(angle+(Double.pi/2)*3))*0.025)
                
-               scene.emptyNode.eulerAngles = SCNVector3(0,angle+(Double.pi/2)*3,0)
-               
                scene.emptyNode.addChildNode(scene.planeDice)
                scene.planeDice.worldPosition = SCNVector3(x,y,z)
-               scene.planeDice.eulerAngles = SCNVector3(0,0,0)
                
                let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(sin(angle+(Double.pi/2)*3),0,cos(angle+(Double.pi/2)*3)), duration: duration)
                scene.emptyNode.runAction(rotateAnimation)
+        bottomPlaneJudge(direction: "forward")
                x += 2*cos(angle+(Double.pi/2)*3)*0.025
                z += -2*sin(angle+(Double.pi/2)*3)*0.025
+        
     }
     @IBAction func backButton(_ sender: Any) {
         buttonInvalid()
-        
         scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos(angle+(Double.pi/2)*1))*0.025,scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(-sin(angle+(Double.pi/2)*1))*0.025)
         
-        scene.emptyNode.eulerAngles = SCNVector3(0,angle+(Double.pi/2)*3,0)
-        
         scene.emptyNode.addChildNode(scene.planeDice)
+        
         scene.planeDice.worldPosition = SCNVector3(x,y,z)
-        scene.planeDice.eulerAngles = SCNVector3(0,0,0)
         
         let rotateAnimation = SCNAction.rotate(by: -CGFloat(Float.pi/2), around: SCNVector3(sin(angle+(Double.pi/2)*1),0,cos(angle+(Double.pi/2)*1)), duration: duration)
         scene.emptyNode.runAction(rotateAnimation)
+        bottomPlaneJudge(direction: "back")
         x += 2*cos(angle+(Double.pi/2)*1)*0.025
         z += -2*sin(angle+(Double.pi/2)*1)*0.025
         
-       
     }
     
     @IBAction func durationSlider(_ sender: UISlider) {
@@ -346,7 +312,7 @@ class ViewController: UIViewController,ARSCNViewDelegate {
     }
     //方向のSCNPlaneを配置する関数
     func bottomPlaneJudge(direction: String) {
-        y += 0.00000001
+        y += 0.000001
            let planeArr = [scene.plane1,scene.plane2,scene.plane3,scene.plane4,scene.plane5,scene.plane6]
            let minplane = minYposition(nodeArr: planeArr)
            switch minplane {
@@ -354,21 +320,20 @@ class ViewController: UIViewController,ARSCNViewDelegate {
                let a = SCNNode()
                let b = SCNPlane(width: 0.05, height: 0.05)
                
-               a.eulerAngles = SCNVector3(0,45,0)//テスト底面のノードを回転
-               
                a.geometry = b
                a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect1")
                switch direction {
-               case "right":
-                a.position = SCNVector3(x-0.05,y-0.025,z)
-               case "left":
-            a.position = SCNVector3(x+0.05,y-0.025,z)
-               case "forward":
-                a.position = SCNVector3(x,y-0.025,z-0.05)
-               default:
-                a.position = SCNVector3(x,y-0.025,z+0.05)
-               }
-               a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
+                  case "right":
+                   a.position = SCNVector3(x,y-0.025,z)
+                  case "left":
+               a.position = SCNVector3(x,y-0.025,z)
+                  case "forward":
+                   a.position = SCNVector3(x,y-0.025,z)
+                  default:
+                  a.position = SCNVector3(x,y-0.025,z)
+                  }
+               a.eulerAngles = SCNVector3(-90.degreeToRadians,angle,0)
+               
                scene.rootNode.addChildNode(a)
                
            case scene.plane2:
@@ -378,15 +343,15 @@ class ViewController: UIViewController,ARSCNViewDelegate {
            a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect2")
            switch direction {
               case "right":
-               a.position = SCNVector3(x-0.05,y-0.025,z)
+               a.position = SCNVector3(x,y-0.025,z)
               case "left":
-           a.position = SCNVector3(x+0.05,y-0.025,z)
+           a.position = SCNVector3(x,y-0.025,z)
               case "forward":
-               a.position = SCNVector3(x,y-0.025,z-0.05)
+               a.position = SCNVector3(x,y-0.025,z)
               default:
-               a.position = SCNVector3(x,y-0.025,z+0.05)
+              a.position = SCNVector3(x,y-0.025,z)
               }
-           a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
+           a.eulerAngles = SCNVector3(-90.degreeToRadians,angle,0)
            scene.rootNode.addChildNode(a)
                
            case scene.plane3:
@@ -396,15 +361,15 @@ class ViewController: UIViewController,ARSCNViewDelegate {
                a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect3")
                switch direction {
                   case "right":
-                   a.position = SCNVector3(x-0.05,y-0.025,z)
+                   a.position = SCNVector3(x,y-0.025,z)
                   case "left":
-               a.position = SCNVector3(x+0.05,y-0.025,z)
+               a.position = SCNVector3(x,y-0.025,z)
                   case "forward":
-                   a.position = SCNVector3(x,y-0.025,z-0.05)
+                   a.position = SCNVector3(x,y-0.025,z)
                   default:
-                   a.position = SCNVector3(x,y-0.025,z+0.05)
+                  a.position = SCNVector3(x,y-0.025,z)
                   }
-               a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
+               a.eulerAngles = SCNVector3(-90.degreeToRadians,angle,0)
                scene.rootNode.addChildNode(a)
                
            case scene.plane4:
@@ -414,15 +379,15 @@ class ViewController: UIViewController,ARSCNViewDelegate {
            a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect4")
            switch direction {
               case "right":
-               a.position = SCNVector3(x-0.05,y-0.025,z)
+               a.position = SCNVector3(x,y-0.025,z)
               case "left":
-           a.position = SCNVector3(x+0.05,y-0.025,z)
+           a.position = SCNVector3(x,y-0.025,z)
               case "forward":
-               a.position = SCNVector3(x,y-0.025,z-0.05)
+               a.position = SCNVector3(x,y-0.025,z)
               default:
-               a.position = SCNVector3(x,y-0.025,z+0.05)
+              a.position = SCNVector3(x,y-0.025,z)
               }
-           a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
+           a.eulerAngles = SCNVector3(-90.degreeToRadians,angle,0)
            scene.rootNode.addChildNode(a)
                
            case scene.plane5:
@@ -432,15 +397,15 @@ class ViewController: UIViewController,ARSCNViewDelegate {
            a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect5")
            switch direction {
               case "right":
-               a.position = SCNVector3(x-0.05,y-0.025,z)
+               a.position = SCNVector3(x,y-0.025,z)
               case "left":
-           a.position = SCNVector3(x+0.05,y-0.025,z)
+           a.position = SCNVector3(x,y-0.025,z)
               case "forward":
-               a.position = SCNVector3(x,y-0.025,z-0.05)
+               a.position = SCNVector3(x,y-0.025,z)
               default:
-               a.position = SCNVector3(x,y-0.025,z+0.05)
+              a.position = SCNVector3(x,y-0.025,z)
               }
-           a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
+           a.eulerAngles = SCNVector3(-90.degreeToRadians,angle,0)
            scene.rootNode.addChildNode(a)
            
            default:
@@ -448,17 +413,18 @@ class ViewController: UIViewController,ARSCNViewDelegate {
                let b = SCNPlane(width: 0.05, height: 0.05)
                a.geometry = b
                a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect6")
+               print("planeを回した\(angle)")
                switch direction {
                   case "right":
-                   a.position = SCNVector3(x-0.05,y-0.025,z)
+                   a.position = SCNVector3(x,y-0.025,z)
                   case "left":
-               a.position = SCNVector3(x+0.05,y-0.025,z)
+               a.position = SCNVector3(x,y-0.025,z)
                   case "forward":
-                   a.position = SCNVector3(x,y-0.025,z-0.05)
+                   a.position = SCNVector3(x,y-0.025,z)
                   default:
-                   a.position = SCNVector3(x,y-0.025,z+0.05)
+                  a.position = SCNVector3(x,y-0.025,z)
                   }
-               a.eulerAngles = SCNVector3(-90.degreeToRadians,0,0)
+               a.eulerAngles = SCNVector3(-90.degreeToRadians,angle,0)
                scene.rootNode.addChildNode(a)
                print("minPlaneは\(minplane)")
                print("scene.plane1は\(scene.plane1)")
