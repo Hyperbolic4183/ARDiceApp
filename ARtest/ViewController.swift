@@ -11,7 +11,7 @@ import ARKit
 
 class ViewController: UIViewController,ARSCNViewDelegate {
 
-    
+
     @IBOutlet weak var sceneView: ARSCNView!
     @IBOutlet weak var backButtin: UIButton!
     @IBOutlet weak var rightButton: UIButton!
@@ -109,8 +109,6 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         self.y = Double(thirdColumn.y)
         self.z = Double(thirdColumn.z)
     }
-    
-    
     
     func createPlane(planeAnchor: ARPlaneAnchor) -> SCNNode{
         let plane = SCNPlane(width: CGFloat(planeAnchor.extent.x), height: CGFloat(planeAnchor.extent.z))
@@ -313,7 +311,7 @@ class ViewController: UIViewController,ARSCNViewDelegate {
     //方向のSCNPlaneを配置する関数
     func bottomPlaneJudge(direction: String) {
         y += 0.000001
-           let planeArr = [scene.plane1,scene.plane2,scene.plane3,scene.plane4,scene.plane5,scene.plane6]
+        let planeArr = [scene.plane1,scene.plane2,scene.plane3,scene.plane4,scene.plane5,scene.plane6]
            let minplane = minYposition(nodeArr: planeArr)
            switch minplane {
            case scene.plane1:
@@ -332,26 +330,42 @@ class ViewController: UIViewController,ARSCNViewDelegate {
                   default:
                   a.position = SCNVector3(x,y-0.025,z)
                   }
-               a.eulerAngles = SCNVector3(-90.degreeToRadians,angle,0)
+               a.eulerAngles = SCNVector3(-90.degreeToRadians,angle,0)//まっすぐ配置させるために,カメラ座標のy軸回転に応じて回転させている。
                
                scene.rootNode.addChildNode(a)
                
            case scene.plane2:
+            print("plane2が選ばれました")
            let a = SCNNode()
            let b = SCNPlane(width: 0.05, height: 0.05)
+           //var rotateangle = 0.0
            a.geometry = b
            a.geometry?.firstMaterial?.diffuse.contents = UIImage(named: "rect2")
            switch direction {
               case "right":
                a.position = SCNVector3(x,y-0.025,z)
+               
+            //maxXpositionの返り値によって,配置された底面を回転させる
+              //plane.eulerAngles = SCNVector3(Float(-90.degreeToRadians),plane.eulerAngles.y+Float(angle),plane.eulerAngles.z)
+               //rightボタンを押した時に底面が2であった場合のみおこる
+               
+               //カメラ座標のy軸回転軸応じて,底面を回転させ,底面でない面のそれぞれのx軸への正射影の長さに応じて回転させる
+                judgePlaneDirection(plane: a, planeArr: [scene.plane3,scene.plane4,scene.plane1,scene.plane6])//aで既に場合分けされた後
+           
               case "left":
-           a.position = SCNVector3(x,y-0.025,z)
+               a.position = SCNVector3(x,y-0.025,z)
+               //カメラ座標のy軸回転軸応じて,底面を回転させ,底面でない面のそれぞれのx軸への正射影の長さに応じて回転させる
+                judgePlaneDirection(plane: a, planeArr: [scene.plane3,scene.plane4,scene.plane1,scene.plane6])//aで既に場合分けされた後
               case "forward":
                a.position = SCNVector3(x,y-0.025,z)
+                judgePlaneDirection(plane: a, planeArr: [scene.plane3,scene.plane4,scene.plane1,scene.plane6])//aで既に場合分けされた後
               default:
-              a.position = SCNVector3(x,y-0.025,z)
+               a.position = SCNVector3(x,y-0.025,z)
+                judgePlaneDirection(plane: a, planeArr: [scene.plane3,scene.plane4,scene.plane1,scene.plane6])//aで既に場合分けされた後
               }
-           a.eulerAngles = SCNVector3(-90.degreeToRadians,angle,0)
+           
+          //a.eulerAngles = SCNVector3(-90.degreeToRadians,angle+0/*otateangle*/,0)
+           
            scene.rootNode.addChildNode(a)
                
            case scene.plane3:
@@ -362,14 +376,18 @@ class ViewController: UIViewController,ARSCNViewDelegate {
                switch direction {
                   case "right":
                    a.position = SCNVector3(x,y-0.025,z)
+                judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
                   case "left":
                a.position = SCNVector3(x,y-0.025,z)
+                judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
                   case "forward":
                    a.position = SCNVector3(x,y-0.025,z)
+                judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
                   default:
                   a.position = SCNVector3(x,y-0.025,z)
+                judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
                   }
-               a.eulerAngles = SCNVector3(-90.degreeToRadians,angle,0)
+               //a.eulerAngles = SCNVector3(-90.degreeToRadians,angle,0) //変更点もともと書いてあり,うまくいっていた
                scene.rootNode.addChildNode(a)
                
            case scene.plane4:
@@ -417,14 +435,18 @@ class ViewController: UIViewController,ARSCNViewDelegate {
                switch direction {
                   case "right":
                    a.position = SCNVector3(x,y-0.025,z)
+                judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane3,scene.plane4])
                   case "left":
                a.position = SCNVector3(x,y-0.025,z)
+                    judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane3,scene.plane4])
                   case "forward":
                    a.position = SCNVector3(x,y-0.025,z)
+                    judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane3,scene.plane4])
                   default:
                   a.position = SCNVector3(x,y-0.025,z)
+                    judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane3,scene.plane4])
                   }
-               a.eulerAngles = SCNVector3(-90.degreeToRadians,angle,0)
+               //a.eulerAngles = SCNVector3(-90.degreeToRadians,angle,0)
                scene.rootNode.addChildNode(a)
                print("minPlaneは\(minplane)")
                print("scene.plane1は\(scene.plane1)")
@@ -441,6 +463,43 @@ class ViewController: UIViewController,ARSCNViewDelegate {
             }
         }
         return nodeArr[index]
+    }
+    
+    //SCNNode座標の配列から最も回転したx座標への正射影の大きいSCNNodeを返す関数
+    func maxXposition(nodeArr :[SCNNode]) -> SCNNode {
+        var max: Double = Double(nodeArr[0].worldPosition.x) * cos(angle)*0.05
+        var index = 0
+        for i in 0 ..< nodeArr.count {
+            if max < Double(nodeArr[i].worldPosition.x) * cos(angle)*0.05{
+                index = i
+                max = Double(nodeArr[i].worldPosition.x) * cos(angle)*0.05
+            }
+        }
+        return nodeArr[index]
+    }
+    
+    //SCNPlaneとSCNPlane配列を引数にして,y軸を回転させて返す関数
+    //SCNPlane配列には,一つ目と二つ目に回転の必要ない時のPlaneを格納,三つ目四つ目に90度回転が必要なものを格納
+    
+    func judgePlaneDirection(plane: SCNNode, planeArr: [SCNNode]) -> Void {
+        let test = maxXposition(nodeArr: planeArr)
+        switch test {
+        case planeArr[0]:
+            print("planeArr[0]")
+            plane.eulerAngles = SCNVector3(-90.degreeToRadians,angle+Double.pi/2,0)
+            //a.eulerAngles = SCNVector3(-90.degreeToRadians,angle+0/*otateangle*/,0)
+        case planeArr[1]:
+            print("planeArr[1]")
+            plane.eulerAngles = SCNVector3(-90.degreeToRadians,angle+Double.pi/2,0)
+        case planeArr[2]:
+            print("planeArr[2]")
+            //plane.eulerAngles = SCNVector3(Float(-90.degreeToRadians),plane.eulerAngles.y+Float(Double.pi/2 + angle),plane.eulerAngles.z)
+            plane.eulerAngles = SCNVector3(-90.degreeToRadians,angle,0)
+        default:
+            print("planeArr[3]")
+            //plane.eulerAngles = SCNVector3(Float(-90.degreeToRadians),plane.eulerAngles.y+Float(Double.pi/2 + angle),plane.eulerAngles.z)
+            plane.eulerAngles = SCNVector3(-90.degreeToRadians,angle,0)
+        }
     }
     
     func yRotation(standardVector: [Double],angle: Double) -> SCNVector3 {
