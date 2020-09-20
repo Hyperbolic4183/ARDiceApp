@@ -97,7 +97,20 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         
         if let camera = self.sceneView.pointOfView {
             angle = Double(camera.eulerAngles.y)
-            planeDice.eulerAngles = SCNVector3(0,angle,0)
+            
+            //angle.smallerThanpi
+            planeDice.eulerAngles = SCNVector3(0,camera.eulerAngles.y,0)
+            
+            //if angle < 0 {
+            
+            print("angleは\(angle)です")
+            planeDice.geometry?.firstMaterial?.lightingModel = .constant
+            planeDice.position = SCNVector3(thirdColumn.x,thirdColumn.y,thirdColumn.z)
+            
+            sceneView.scene.rootNode.addChildNode(planeDice)
+           // } else {
+           //     return
+          //  }
         }
         
         planeDice.geometry?.firstMaterial?.lightingModel = .constant
@@ -172,6 +185,7 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         }
     }
     @IBAction func leftButton(_ sender: Any) {
+        print("angleは\(angle)です")
         buttonInvalid()
         
         scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos(angle+Double.pi))*0.025,scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(-sin(angle+Double.pi))*0.025)
@@ -188,6 +202,7 @@ class ViewController: UIViewController,ARSCNViewDelegate {
     }
     
     @IBAction func rightButton(_ sender: Any) {
+        print("angleは\(angle)です")
         buttonInvalid()
         
         scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos(angle)*0.025),scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(-sin(angle))*0.025)
@@ -207,6 +222,7 @@ class ViewController: UIViewController,ARSCNViewDelegate {
     
     
     @IBAction func forwardButton(_ sender: Any) {
+        print("angleは\(angle)です")
         buttonInvalid()
                
                scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos(angle+(Double.pi/2)*3))*0.025,scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(-sin(angle+(Double.pi/2)*3))*0.025)
@@ -222,6 +238,7 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         
     }
     @IBAction func backButton(_ sender: Any) {
+        print("angleは\(angle)です")
         buttonInvalid()
         scene.emptyNode.position = SCNVector3(scene.planeDice.worldPosition.x+Float(cos(angle+(Double.pi/2)*1))*0.025,scene.planeDice.worldPosition.y-0.025,scene.planeDice.worldPosition.z+Float(-sin(angle+(Double.pi/2)*1))*0.025)
         
@@ -350,18 +367,70 @@ class ViewController: UIViewController,ARSCNViewDelegate {
                //rightボタンを押した時に底面が2であった場合のみおこる
                
                //カメラ座標のy軸回転軸応じて,底面を回転させ,底面でない面のそれぞれのx軸への正射影の長さに応じて回転させる
-                judgePlaneDirection(plane: a, planeArr: [scene.plane3,scene.plane4,scene.plane1,scene.plane6])//aで既に場合分けされた後
-           
+                switch angle {
+                case -Double.pi/2 ..< -Double.pi/4:
+                    print("0 ..< Double.pi/4")
+                    judgePlaneDirection(plane: a, planeArr: [scene.plane1,scene.plane6,scene.plane3,scene.plane4])
+                case -Double.pi/4 ..< 0:
+                    print("pi/4 ..< pi/2")
+                    judgePlaneDirection(plane: a, planeArr: [scene.plane3,scene.plane4,scene.plane1,scene.plane6])
+                case 0 ..< Double.pi/4:
+                    print("Double.pi/2 ..< (Double.pi/4)*3")
+                    judgePlaneDirection(plane: a, planeArr: [scene.plane3,scene.plane4,scene.plane1,scene.plane6])
+                default:
+                    print("(pi/4)3 ..< pi")
+                    judgePlaneDirection(plane: a, planeArr: [scene.plane1,scene.plane6,scene.plane3,scene.plane4])
+                }
+                
               case "left":
                a.position = SCNVector3(x,y-0.025,z)
                //カメラ座標のy軸回転軸応じて,底面を回転させ,底面でない面のそれぞれのx軸への正射影の長さに応じて回転させる
-                judgePlaneDirection(plane: a, planeArr: [scene.plane3,scene.plane4,scene.plane1,scene.plane6])//aで既に場合分けされた後
+                switch angle {
+                case -Double.pi/2 ..< -Double.pi/4:
+                    print("0 ..< Double.pi/4")
+                    judgePlaneDirection(plane: a, planeArr: [scene.plane1,scene.plane6,scene.plane3,scene.plane4])
+                case -Double.pi/4 ..< 0:
+                    print("pi/4 ..< pi/2")
+                    judgePlaneDirection(plane: a, planeArr: [scene.plane3,scene.plane4,scene.plane1,scene.plane6])
+                case 0 ..< Double.pi/4:
+                    print("Double.pi/2 ..< (Double.pi/4)*3")
+                    judgePlaneDirection(plane: a, planeArr: [scene.plane3,scene.plane4,scene.plane1,scene.plane6])
+                default:
+                    print("(pi/4)3 ..< pi")
+                    judgePlaneDirection(plane: a, planeArr: [scene.plane1,scene.plane6,scene.plane3,scene.plane4])
+                }
               case "forward":
                a.position = SCNVector3(x,y-0.025,z)
-                judgePlaneDirection(plane: a, planeArr: [scene.plane3,scene.plane4,scene.plane1,scene.plane6])//aで既に場合分けされた後
+                switch angle {
+                case -Double.pi/2 ..< -Double.pi/4:
+                    print("0 ..< Double.pi/4")
+                    judgePlaneDirection(plane: a, planeArr: [scene.plane1,scene.plane6,scene.plane3,scene.plane4])
+                case -Double.pi/4 ..< 0:
+                    print("pi/4 ..< pi/2")
+                    judgePlaneDirection(plane: a, planeArr: [scene.plane3,scene.plane4,scene.plane1,scene.plane6])
+                case 0 ..< Double.pi/4:
+                    print("Double.pi/2 ..< (Double.pi/4)*3")
+                    judgePlaneDirection(plane: a, planeArr: [scene.plane3,scene.plane4,scene.plane1,scene.plane6])
+                default:
+                    print("(pi/4)3 ..< pi")
+                    judgePlaneDirection(plane: a, planeArr: [scene.plane1,scene.plane6,scene.plane3,scene.plane4])
+                }
               default:
                a.position = SCNVector3(x,y-0.025,z)
-                judgePlaneDirection(plane: a, planeArr: [scene.plane3,scene.plane4,scene.plane1,scene.plane6])//aで既に場合分けされた後
+                switch angle {
+                case -Double.pi/2 ..< -Double.pi/4:
+                    print("0 ..< Double.pi/4")
+                    judgePlaneDirection(plane: a, planeArr: [scene.plane1,scene.plane6,scene.plane3,scene.plane4])
+                case -Double.pi/4 ..< 0:
+                    print("pi/4 ..< pi/2")
+                    judgePlaneDirection(plane: a, planeArr: [scene.plane3,scene.plane4,scene.plane1,scene.plane6])
+                case 0 ..< Double.pi/4:
+                    print("Double.pi/2 ..< (Double.pi/4)*3")
+                    judgePlaneDirection(plane: a, planeArr: [scene.plane3,scene.plane4,scene.plane1,scene.plane6])
+                default:
+                    print("(pi/4)3 ..< pi")
+                    judgePlaneDirection(plane: a, planeArr: [scene.plane1,scene.plane6,scene.plane3,scene.plane4])
+                }
               }
            
           //a.eulerAngles = SCNVector3(-90.degreeToRadians,angle+0/*otateangle*/,0)
@@ -376,18 +445,69 @@ class ViewController: UIViewController,ARSCNViewDelegate {
                switch direction {
                   case "right":
                    a.position = SCNVector3(x,y-0.025,z)
-                judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
+                    switch angle {
+                    case -Double.pi/2 ..< -Double.pi/4:
+                        print("0 ..< Double.pi/4")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane1,scene.plane6,scene.plane2,scene.plane5])
+                    case -Double.pi/4 ..< 0:
+                        print("pi/4 ..< pi/2")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
+                    case 0 ..< Double.pi/4:
+                        print("Double.pi/2 ..< (Double.pi/4)*3")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
+                    default:
+                        print("(pi/4)3 ..< pi")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane1,scene.plane6,scene.plane2,scene.plane5])
+                    }
                   case "left":
                a.position = SCNVector3(x,y-0.025,z)
-                judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
+                    switch angle {
+                    case -Double.pi/2 ..< -Double.pi/4:
+                        print("0 ..< Double.pi/4")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane1,scene.plane6,scene.plane2,scene.plane5])
+                    case -Double.pi/4 ..< 0:
+                        print("pi/4 ..< pi/2")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
+                    case 0 ..< Double.pi/4:
+                        print("Double.pi/2 ..< (Double.pi/4)*3")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
+                    default:
+                        print("(pi/4)3 ..< pi")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane1,scene.plane6,scene.plane2,scene.plane5])
+                    }
                   case "forward":
                    a.position = SCNVector3(x,y-0.025,z)
-                judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
+                    switch angle {
+                    case -Double.pi/2 ..< -Double.pi/4:
+                        print("0 ..< Double.pi/4")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane1,scene.plane6,scene.plane2,scene.plane5])
+                    case -Double.pi/4 ..< 0:
+                        print("pi/4 ..< pi/2")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
+                    case 0 ..< Double.pi/4:
+                        print("Double.pi/2 ..< (Double.pi/4)*3")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
+                    default:
+                        print("(pi/4)3 ..< pi")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane1,scene.plane6,scene.plane2,scene.plane5])
+                    }
                   default:
                   a.position = SCNVector3(x,y-0.025,z)
-                judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
+                    switch angle {
+                    case -Double.pi/2 ..< -Double.pi/4:
+                        print("0 ..< Double.pi/4")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane1,scene.plane6,scene.plane2,scene.plane5])
+                    case -Double.pi/4 ..< 0:
+                        print("pi/4 ..< pi/2")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
+                    case 0 ..< Double.pi/4:
+                        print("Double.pi/2 ..< (Double.pi/4)*3")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
+                    default:
+                        print("(pi/4)3 ..< pi")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane1,scene.plane6,scene.plane2,scene.plane5])
+                    }
                   }
-               //a.eulerAngles = SCNVector3(-90.degreeToRadians,angle,0) //変更点もともと書いてあり,うまくいっていた
                scene.rootNode.addChildNode(a)
                
            case scene.plane4:
@@ -435,21 +555,71 @@ class ViewController: UIViewController,ARSCNViewDelegate {
                switch direction {
                   case "right":
                    a.position = SCNVector3(x,y-0.025,z)
-                judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane3,scene.plane4])
+                    switch abs(angle) {
+                    case -Double.pi/2 ..< -Double.pi/4:
+                        print("0 ..< Double.pi/4")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane3,scene.plane4])
+                    case -Double.pi/4 ..< 0:
+                        print("pi/4 ..< pi/2")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
+                    case 0 ..< Double.pi/4:
+                        print("Double.pi/2 ..< (Double.pi/4)*3")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
+                    default:
+                        print("(pi/4)3 ..< pi")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane3,scene.plane4])
+                    }
                   case "left":
                a.position = SCNVector3(x,y-0.025,z)
-                    judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane3,scene.plane4])
+                    switch abs(angle) {
+                    case -Double.pi/2 ..< -Double.pi/4:
+                        print("0 ..< Double.pi/4")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane3,scene.plane4])
+                    case -Double.pi/4 ..< 0:
+                        print("pi/4 ..< pi/2")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
+                    case 0 ..< Double.pi/4:
+                        print("Double.pi/2 ..< (Double.pi/4)*3")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
+                    default:
+                        print("(pi/4)3 ..< pi")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane3,scene.plane4])
+                    }
                   case "forward":
                    a.position = SCNVector3(x,y-0.025,z)
-                    judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane3,scene.plane4])
+                    switch angle {
+                    case -Double.pi/2 ..< -Double.pi/4:
+                        print("0 ..< Double.pi/4")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane3,scene.plane4])
+                    case -Double.pi/4 ..< 0:
+                        print("pi/4 ..< pi/2")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
+                    case 0 ..< Double.pi/4:
+                        print("Double.pi/2 ..< (Double.pi/4)*3")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane1,scene.plane6])
+                    default:
+                        print("(pi/4)3 ..< pi")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane3,scene.plane4])
+                    }
                   default:
                   a.position = SCNVector3(x,y-0.025,z)
-                    judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane3,scene.plane4])
+                    switch angle {
+                    case -Double.pi/2 ..< -Double.pi/4:
+                        print("-Double.pi/2 ..< -Double.pi/4")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane3,scene.plane4,scene.plane2,scene.plane5])
+                    case -Double.pi/4 ..< 0:
+                        print("-Double.pi/4 ..< 0")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane3,scene.plane4])
+                    case 0 ..< Double.pi/4:
+                        print("0 ..< Double.pi/4")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane2,scene.plane5,scene.plane3,scene.plane4])
+                    default:
+                        print("default")
+                        judgePlaneDirection(plane: a, planeArr: [scene.plane3,scene.plane4,scene.plane2,scene.plane5])
+                    }
                   }
                //a.eulerAngles = SCNVector3(-90.degreeToRadians,angle,0)
                scene.rootNode.addChildNode(a)
-               print("minPlaneは\(minplane)")
-               print("scene.plane1は\(scene.plane1)")
            }
        }
     //SCNNode座標の配列から最もz座標の小さいSCNNodeを返す関数
@@ -470,7 +640,7 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         var max: Double = Double(nodeArr[0].worldPosition.x) * cos(angle)*0.05
         var index = 0
         for i in 0 ..< nodeArr.count {
-            if max < Double(nodeArr[i].worldPosition.x) * cos(angle)*0.05{
+            if max > Double(nodeArr[i].worldPosition.x) * cos(angle)*0.05{
                 index = i
                 max = Double(nodeArr[i].worldPosition.x) * cos(angle)*0.05
             }
@@ -485,19 +655,12 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         let test = maxXposition(nodeArr: planeArr)
         switch test {
         case planeArr[0]:
-            print("planeArr[0]")
             plane.eulerAngles = SCNVector3(-90.degreeToRadians,angle+Double.pi/2,0)
-            //a.eulerAngles = SCNVector3(-90.degreeToRadians,angle+0/*otateangle*/,0)
         case planeArr[1]:
-            print("planeArr[1]")
             plane.eulerAngles = SCNVector3(-90.degreeToRadians,angle+Double.pi/2,0)
         case planeArr[2]:
-            print("planeArr[2]")
-            //plane.eulerAngles = SCNVector3(Float(-90.degreeToRadians),plane.eulerAngles.y+Float(Double.pi/2 + angle),plane.eulerAngles.z)
             plane.eulerAngles = SCNVector3(-90.degreeToRadians,angle,0)
         default:
-            print("planeArr[3]")
-            //plane.eulerAngles = SCNVector3(Float(-90.degreeToRadians),plane.eulerAngles.y+Float(Double.pi/2 + angle),plane.eulerAngles.z)
             plane.eulerAngles = SCNVector3(-90.degreeToRadians,angle,0)
         }
     }
@@ -513,6 +676,10 @@ class ViewController: UIViewController,ARSCNViewDelegate {
         return SCNVector3(ansVector[0],ansVector[1],ansVector[2])
     }
     
+    func smallerThanPI() {
+        
+    }
+    
 }
 
 
@@ -523,4 +690,13 @@ extension Int {
 
 extension Double {
     var degreeToRadians: Double { return Double(self) * .pi/180 }
+    
+    var smallerThanpi: Double {
+        var test = self
+        while(test > Double.pi) {
+            test -= Double.pi
+        }
+        return test
+    }
+    
 }
